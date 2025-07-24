@@ -15,6 +15,7 @@ import 'pages/privacy_page.dart';
 import 'pages/feedback_page.dart';
 import 'pages/admin_panel.dart';
 import 'pages/sign_up.dart';
+import 'pages/emergency.dart';
 
 void main() {
   runApp(MyApp());
@@ -102,6 +103,7 @@ class MyApp extends StatelessWidget {
         '/privacy': (context) => PrivacyPage(),
         '/feedback': (context) => FeedbackPage(),
         '/admin': (context) => AdminPanelPage(),
+        '/emergency': (context) => EmergencyPage(),
       },
     );
   }

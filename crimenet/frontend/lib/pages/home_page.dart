@@ -10,15 +10,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String searchQuery = '';
-  String? selectedState;
-  String? selectedCity;
-  String? selectedType;
-  DateTime? selectedDate;
-  TimeOfDay? selectedTime;
   Map<String, List<String>> stateCityMap = {};
   List<String> stateOptions = [];
   List<String> cityOptions = [];
-  final List<String> types = ['Theft', 'Murder', 'Rape', 'Missing', 'Other'];
   bool isLoading = true;
   @override
   void initState() {
@@ -32,243 +26,232 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       stateCityMap = data.map((k, v) => MapEntry(k, List<String>.from(v)));
       stateOptions = stateCityMap.keys.toList();
-      selectedState = stateOptions.isNotEmpty ? stateOptions[0] : null;
-      cityOptions = selectedState != null
-          ? stateCityMap[selectedState!] ?? []
+      cityOptions = stateOptions.isNotEmpty
+          ? stateCityMap[stateOptions[0]] ?? []
           : [];
-      selectedCity = cityOptions.isNotEmpty ? cityOptions[0] : null;
       isLoading = false;
-    });
-  }
-
-  void updateCities(String? state) {
-    setState(() {
-      selectedState = state;
-      cityOptions = state != null ? stateCityMap[state] ?? [] : [];
-      selectedCity = cityOptions.isNotEmpty ? cityOptions[0] : null;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'ᴄ ʀ ɪ ᴍ ᴇ ɴ ᴇ ᴛ',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Color(0xFF00215E),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.account_circle, color: Colors.white),
-            onPressed: () => Navigator.pushNamed(context, '/profile'),
+    return WillPopScope(
+      onWillPop: () async {
+        if (ModalRoute.of(context)?.settings.name != '/home') {
+          Navigator.pushReplacementNamed(context, '/home');
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'ᴄ ʀ ɪ ᴍ ᴇ ɴ ᴇ ᴛ',
+            style: TextStyle(color: Colors.white),
           ),
-        ],
-      ),
-      drawer: Drawer(
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF00215E), Color(0xFF2C4E80)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+          backgroundColor: Color(0xFF00215E),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.account_circle, color: Colors.white),
+              onPressed: () => Navigator.pushNamed(context, '/profile'),
+            ),
+          ],
+        ),
+        drawer: Drawer(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF00215E), Color(0xFF2C4E80)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: ListView(
+              padding: EdgeInsets.only(top: 30),
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 28,
+                        backgroundColor: Color(0xFFFC4100),
+                        child: Icon(
+                          Icons.account_circle,
+                          color: Colors.white,
+                          size: 36,
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Welcome',
+                            style: TextStyle(
+                              color: Color(0xFFFFC55A),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'User',
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(
+                  color: Color(0xFFFC4100),
+                  thickness: 1,
+                  indent: 16,
+                  endIndent: 16,
+                ),
+                _drawerMenuItem(
+                  context,
+                  Icons.insights,
+                  'Insights',
+                  '/insights',
+                ),
+                _drawerMenuItem(
+                  context,
+                  Icons.feedback,
+                  'Feedback',
+                  '/feedback',
+                ),
+                _drawerMenuItem(
+                  context,
+                  Icons.admin_panel_settings,
+                  'Admin Panel',
+                  '/admin',
+                ),
+                _drawerMenuItem(context, Icons.description, 'Terms', '/terms'),
+                _drawerMenuItem(
+                  context,
+                  Icons.privacy_tip,
+                  'Privacy',
+                  '/privacy',
+                ),
+                _drawerMenuItem(
+                  context,
+                  Icons.folder_shared,
+                  'Case Details',
+                  '/case_details',
+                ),
+              ],
             ),
           ),
-          child: ListView(
-            padding: EdgeInsets.only(top: 30),
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 32, horizontal: 16),
-                child: Row(
+        ),
+        body: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(color: Color(0xFFFC4100)),
+              )
+            : Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
                   children: [
-                    CircleAvatar(
-                      radius: 28,
-                      backgroundColor: Color(0xFFFC4100),
-                      child: Icon(
-                        Icons.account_circle,
-                        color: Colors.white,
-                        size: 36,
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFF2C4E80),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0xFF2C4E80).withOpacity(0.1),
+                            blurRadius: 8,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
                       ),
-                    ),
-                    SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Welcome',
-                          style: TextStyle(
-                            color: Color(0xFFFFC55A),
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                      child: TextField(
+                        onChanged: (value) =>
+                            setState(() => searchQuery = value),
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          hintText: 'Search for crimes...',
+                          hintStyle: const TextStyle(color: Color(0xFFFFC55A)),
+                          border: InputBorder.none,
+                          prefixIcon: const Icon(
+                            Icons.search,
+                            color: Color(0xFFFC4100),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
                           ),
                         ),
-                        Text(
-                          'User',
-                          style: TextStyle(color: Colors.white, fontSize: 14),
-                        ),
-                      ],
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: _mainButton(
+                                  context,
+                                  'Report Crime',
+                                  '/report',
+                                  Icons.report,
+                                ),
+                              ),
+                              SizedBox(width: 16),
+                              Expanded(
+                                child: _mainButton(
+                                  context,
+                                  'Emergency',
+                                  '/emergency',
+                                  Icons.warning,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-              Divider(
-                color: Color(0xFFFC4100),
-                thickness: 1,
-                indent: 16,
-                endIndent: 16,
-              ),
-              _drawerMenuItem(context, Icons.insights, 'Insights', '/insights'),
-              _drawerMenuItem(context, Icons.feedback, 'Feedback', '/feedback'),
-              _drawerMenuItem(
-                context,
-                Icons.admin_panel_settings,
-                'Admin Panel',
-                '/admin',
-              ),
-              _drawerMenuItem(context, Icons.description, 'Terms', '/terms'),
-              _drawerMenuItem(
-                context,
-                Icons.privacy_tip,
-                'Privacy',
-                '/privacy',
-              ),
-              _drawerMenuItem(
-                context,
-                Icons.folder_shared,
-                'Case Details',
-                '/case_details',
-              ),
-            ],
-          ),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Color(0xFF2C4E80),
+          selectedItemColor: Color(0xFFFC4100),
+          unselectedItemColor: Colors.white,
+          currentIndex: 0,
+          onTap: (index) {
+            switch (index) {
+              case 0:
+                Navigator.pushReplacementNamed(context, '/home');
+                break;
+              case 1:
+                Navigator.pushReplacementNamed(context, '/recent_cases');
+                break;
+              case 2:
+                Navigator.pushReplacementNamed(context, '/community');
+                break;
+              case 3:
+                Navigator.pushReplacementNamed(context, '/ai_detective');
+                break;
+            }
+          },
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.history),
+              label: 'Recent Cases',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.group),
+              label: 'Community',
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.psychology), label: 'AI'),
+          ],
         ),
       ),
-      body: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: Color(0xFFFC4100)),
-            )
-          : Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFF2C4E80),
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xFF2C4E80).withOpacity(0.1),
-                          blurRadius: 8,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: TextField(
-                      onChanged: (value) => setState(() => searchQuery = value),
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        hintText: 'Search for crimes...',
-                        hintStyle: const TextStyle(color: Color(0xFFFFC55A)),
-                        border: InputBorder.none,
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: Color(0xFFFC4100),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Color(0xFF2C4E80),
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xFF2C4E80).withOpacity(0.08),
-                          blurRadius: 6,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          _filterDropdown(
-                            'State',
-                            stateOptions,
-                            selectedState,
-                            (v) => updateCities(v),
-                            color: Color(0xFF2C4E80),
-                          ),
-                          const SizedBox(width: 8),
-                          _filterDropdown(
-                            'City',
-                            cityOptions,
-                            selectedCity,
-                            (v) => setState(() => selectedCity = v),
-                            color: Color(0xFF2C4E80),
-                          ),
-                          const SizedBox(width: 8),
-                          _filterDropdown(
-                            'Type',
-                            types,
-                            selectedType,
-                            (v) => setState(() => selectedType = v),
-                            color: Color(0xFF2C4E80),
-                          ),
-                          const SizedBox(width: 8),
-                          _dateFilter(context),
-                          const SizedBox(width: 8),
-                          _timeFilter(context),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      children: [
-                        _mainButton(
-                          context,
-                          'Report Crime',
-                          '/report',
-                          Icons.report,
-                        ),
-                        _mainButton(
-                          context,
-                          'AI Detective',
-                          '/ai_detective',
-                          Icons.psychology,
-                        ),
-                        _mainButton(
-                          context,
-                          'Community',
-                          '/community',
-                          Icons.group,
-                        ),
-                        _mainButton(
-                          context,
-                          'Recent Cases',
-                          '/recent_cases',
-                          Icons.history,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
     );
   }
 
@@ -278,26 +261,43 @@ class _HomePageState extends State<HomePage> {
     String route,
     IconData icon,
   ) {
-    return ElevatedButton(
-      onPressed: () => Navigator.pushNamed(context, route),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xFF2C4E80),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        padding: const EdgeInsets.all(16),
-        elevation: 4,
-        shadowColor: Color(0xFF00215E),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 40, color: Color(0xFFFC4100)),
-          const SizedBox(height: 12),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 16, color: Colors.white),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        splashColor: Color(0xFFFFC55A).withOpacity(0.2),
+        highlightColor: Color(0xFFFC4100).withOpacity(0.1),
+        onTap: () => Navigator.pushNamed(context, route),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Color(0xFF2C4E80),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0xFF00215E).withOpacity(0.08),
+                blurRadius: 8,
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
-        ],
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 44, color: Color(0xFFFC4100)),
+              const SizedBox(height: 16),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -328,104 +328,6 @@ class _HomePageState extends State<HomePage> {
           Navigator.pop(context);
           Navigator.pushNamed(context, route);
         },
-      ),
-    );
-  }
-
-  Widget _filterDropdown(
-    String label,
-    List<String> items,
-    String? value,
-    ValueChanged<String?> onChanged, {
-    Color color = const Color(0xFF2C4E80),
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Color(0xFFFC4100), width: 1),
-      ),
-      child: DropdownButton<String>(
-        value: value,
-        hint: Text(label, style: const TextStyle(color: Colors.white)),
-        dropdownColor: color,
-        icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-        underline: Container(),
-        style: const TextStyle(color: Colors.white),
-        items: items
-            .map(
-              (e) => DropdownMenuItem(
-                value: e,
-                child: Text(e, style: const TextStyle(color: Colors.white)),
-              ),
-            )
-            .toList(),
-        onChanged: onChanged,
-      ),
-    );
-  }
-
-  Widget _dateFilter(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        final picked = await showDatePicker(
-          context: context,
-          initialDate: selectedDate ?? DateTime.now(),
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2100),
-        );
-        if (picked != null) setState(() => selectedDate = picked);
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: Color(0xFF2C4E80),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Color(0xFFFC4100), width: 1),
-        ),
-        child: Row(
-          children: [
-            const Icon(Icons.date_range, color: Color(0xFFFC4100)),
-            const SizedBox(width: 4),
-            Text(
-              selectedDate == null
-                  ? 'Date'
-                  : '${selectedDate!.toLocal()}'.split(' ')[0],
-              style: const TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _timeFilter(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        final picked = await showTimePicker(
-          context: context,
-          initialTime: selectedTime ?? TimeOfDay.now(),
-        );
-        if (picked != null) setState(() => selectedTime = picked);
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: Color(0xFF2C4E80),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Color(0xFFFC4100), width: 1),
-        ),
-        child: Row(
-          children: [
-            const Icon(Icons.access_time, color: Color(0xFFFC4100)),
-            const SizedBox(width: 4),
-            Text(
-              selectedTime == null ? 'Time' : selectedTime!.format(context),
-              style: const TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
       ),
     );
   }
