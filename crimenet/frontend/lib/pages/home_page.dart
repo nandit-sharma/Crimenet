@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
   Map<String, List<String>> stateCityMap = {};
   List<String> stateOptions = [];
   List<String> cityOptions = [];
-  final List<String> types = ['Theft', 'Murder', 'Other'];
+  final List<String> types = ['Theft', 'Murder', 'Rape', 'Missing', 'Other'];
   bool isLoading = true;
   @override
   void initState() {
@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           child: ListView(
-            padding: EdgeInsets.zero,
+            padding: EdgeInsets.only(top: 30),
             children: [
               Container(
                 padding: EdgeInsets.symmetric(vertical: 32, horizontal: 16),
@@ -206,7 +206,7 @@ class _HomePageState extends State<HomePage> {
                             stateOptions,
                             selectedState,
                             (v) => updateCities(v),
-                            color: Color(0xFF00215E),
+                            color: Color(0xFF2C4E80),
                           ),
                           const SizedBox(width: 8),
                           _filterDropdown(
@@ -214,7 +214,7 @@ class _HomePageState extends State<HomePage> {
                             cityOptions,
                             selectedCity,
                             (v) => setState(() => selectedCity = v),
-                            color: Color(0xFF00215E),
+                            color: Color(0xFF2C4E80),
                           ),
                           const SizedBox(width: 8),
                           _filterDropdown(

@@ -45,11 +45,9 @@ class _SplashScreenState extends State<SplashScreen>
                 height: 120,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [Color(0xFFFC4100), Color(0xFFFFC55A)],
-                  ),
+                  color: Colors.white,
                 ),
-                child: Icon(Icons.shield, size: 80, color: Colors.white),
+                child: Icon(Icons.shield, size: 80, color: Color(0xFFFC4100)),
               ),
               SizedBox(height: 32),
               Text(
