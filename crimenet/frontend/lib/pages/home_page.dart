@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -21,7 +20,6 @@ class _HomePageState extends State<HomePage> {
   List<String> cityOptions = [];
   final List<String> types = ['Theft', 'Murder', 'Other'];
   bool isLoading = true;
-
   @override
   void initState() {
     super.initState();
@@ -68,26 +66,80 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       drawer: Drawer(
-        backgroundColor: Color(0xFF00215E),
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(color: Color(0xFF2C4E80)),
-              child: const Center(
-                child: Text(
-                  'Menu',
-                  style: TextStyle(color: Colors.white, fontSize: 24),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF00215E), Color(0xFF2C4E80)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 28,
+                      backgroundColor: Color(0xFFFC4100),
+                      child: Icon(
+                        Icons.account_circle,
+                        color: Colors.white,
+                        size: 36,
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Welcome',
+                          style: TextStyle(
+                            color: Color(0xFFFFC55A),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          'User',
+                          style: TextStyle(color: Colors.white, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ),
-            _drawerItem(context, 'Insights', '/insights'),
-            _drawerItem(context, 'Feedback', '/feedback'),
-            _drawerItem(context, 'Admin Panel', '/admin'),
-            _drawerItem(context, 'Terms', '/terms'),
-            _drawerItem(context, 'Privacy', '/privacy'),
-            _drawerItem(context, 'Case Details', '/case_details'),
-          ],
+              Divider(
+                color: Color(0xFFFC4100),
+                thickness: 1,
+                indent: 16,
+                endIndent: 16,
+              ),
+              _drawerMenuItem(context, Icons.insights, 'Insights', '/insights'),
+              _drawerMenuItem(context, Icons.feedback, 'Feedback', '/feedback'),
+              _drawerMenuItem(
+                context,
+                Icons.admin_panel_settings,
+                'Admin Panel',
+                '/admin',
+              ),
+              _drawerMenuItem(context, Icons.description, 'Terms', '/terms'),
+              _drawerMenuItem(
+                context,
+                Icons.privacy_tip,
+                'Privacy',
+                '/privacy',
+              ),
+              _drawerMenuItem(
+                context,
+                Icons.folder_shared,
+                'Case Details',
+                '/case_details',
+              ),
+            ],
+          ),
         ),
       ),
       body: isLoading
@@ -98,14 +150,13 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(24.0),
               child: Column(
                 children: [
-                  // Search bar
                   Container(
                     decoration: BoxDecoration(
                       color: Color(0xFF2C4E80),
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Color(0xFF00215E).withOpacity(0.1),
+                          color: Color(0xFF2C4E80).withOpacity(0.1),
                           blurRadius: 8,
                           offset: Offset(0, 2),
                         ),
@@ -130,7 +181,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Filters
                   Container(
                     padding: const EdgeInsets.symmetric(
                       vertical: 12,
@@ -141,7 +191,7 @@ class _HomePageState extends State<HomePage> {
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Color(0xFF00215E).withOpacity(0.08),
+                          color: Color(0xFF2C4E80).withOpacity(0.08),
                           blurRadius: 6,
                           offset: Offset(0, 2),
                         ),
@@ -252,24 +302,33 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _drawerItem(BuildContext context, String title, String route) {
-    return ListTile(
-      title: Text(
-        title,
-        style: const TextStyle(
-          color: Color(0xFFFFC55A),
-          fontWeight: FontWeight.bold,
+  Widget _drawerMenuItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String route,
+  ) {
+    return Card(
+      color: Colors.transparent,
+      elevation: 0,
+      margin: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: ListTile(
+        leading: Icon(icon, color: Color(0xFFFFC55A)),
+        title: Text(
+          title,
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          size: 16,
+          color: Color(0xFFFC4100),
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, route);
+        },
       ),
-      trailing: const Icon(
-        Icons.arrow_forward_ios,
-        size: 16,
-        color: Color(0xFFFC4100),
-      ),
-      onTap: () {
-        Navigator.pop(context);
-        Navigator.pushNamed(context, route);
-      },
     );
   }
 

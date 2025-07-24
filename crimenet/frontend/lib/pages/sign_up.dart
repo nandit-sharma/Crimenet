@@ -4,25 +4,19 @@ import 'package:flutter/services.dart' show rootBundle;
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
-
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  // Text controllers
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _areaController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-
-  // Dropdown values
   String? gender;
   String? occupation;
   String? state;
   String? city;
-
-  // Dropdown options
   final genderOptions = ['Male', 'Female', 'Other'];
   final occupationOptions = [
     'Student',
@@ -37,11 +31,9 @@ class _SignUpPageState extends State<SignUpPage> {
     'Businessperson',
     'Other',
   ];
-
   Map<String, List<String>> stateCityMap = {};
   List<String> stateOptions = [];
   List<String> cityOptions = [];
-
   @override
   void initState() {
     super.initState();
@@ -68,140 +60,160 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Information'),
-        backgroundColor: Colors.deepPurple,
+        title: Text('Sign Up', style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xFF00215E),
+        elevation: 0,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            // Name
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Full Name',
-                border: OutlineInputBorder(),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF00215E), Color(0xFF2C4E80)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(24),
+          child: Column(
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFFC4100), Color(0xFFFFC55A)],
+                  ),
+                ),
+                child: Icon(Icons.person_add, color: Colors.white, size: 48),
               ),
-            ),
-            const SizedBox(height: 16),
-
-            // Age
-            TextFormField(
-              controller: _ageController,
-              decoration: const InputDecoration(
-                labelText: 'Age',
-                border: OutlineInputBorder(),
+              SizedBox(height: 24),
+              _styledTextField(_nameController, 'Full Name', Icons.person),
+              SizedBox(height: 16),
+              _styledTextField(
+                _ageController,
+                'Age',
+                Icons.cake,
+                isNumber: true,
               ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 16),
-
-            // Gender
-            DropdownButtonFormField<String>(
-              value: gender,
-              decoration: const InputDecoration(
-                labelText: 'Gender',
-                border: OutlineInputBorder(),
+              SizedBox(height: 16),
+              _styledDropdown(
+                'Gender',
+                gender,
+                genderOptions,
+                (value) => setState(() => gender = value),
+                Icons.wc,
               ),
-              items: genderOptions.map((value) {
-                return DropdownMenuItem(value: value, child: Text(value));
-              }).toList(),
-              onChanged: (value) => setState(() => gender = value),
-            ),
-            const SizedBox(height: 16),
-
-            // Occupation
-            DropdownButtonFormField<String>(
-              value: occupation,
-              decoration: const InputDecoration(
-                labelText: 'Occupation',
-                border: OutlineInputBorder(),
+              SizedBox(height: 16),
+              _styledDropdown(
+                'Occupation',
+                occupation,
+                occupationOptions,
+                (value) => setState(() => occupation = value),
+                Icons.work,
               ),
-              items: occupationOptions.map((value) {
-                return DropdownMenuItem(value: value, child: Text(value));
-              }).toList(),
-              onChanged: (value) => setState(() => occupation = value),
-            ),
-            const SizedBox(height: 16),
-
-            // State
-            DropdownButtonFormField<String>(
-              value: state,
-              decoration: const InputDecoration(
-                labelText: 'State',
-                border: OutlineInputBorder(),
-              ),
-              items: stateOptions.map((value) {
-                return DropdownMenuItem(value: value, child: Text(value));
-              }).toList(),
-              onChanged: (value) {
+              SizedBox(height: 16),
+              _styledDropdown('State', state, stateOptions, (value) {
                 if (value != null) {
                   setState(() => state = value);
                   updateCities(value);
                 }
-              },
-            ),
-            const SizedBox(height: 16),
-
-            // City
-            DropdownButtonFormField<String>(
-              value: city,
-              decoration: const InputDecoration(
-                labelText: 'City',
-                border: OutlineInputBorder(),
+              }, Icons.map),
+              SizedBox(height: 16),
+              _styledDropdown(
+                'City',
+                city,
+                cityOptions,
+                (value) => setState(() => city = value),
+                Icons.location_city,
               ),
-              items: cityOptions.map((value) {
-                return DropdownMenuItem(value: value, child: Text(value));
-              }).toList(),
-              onChanged: (value) => setState(() => city = value),
-            ),
-            const SizedBox(height: 16),
-
-            // Area
-            TextFormField(
-              controller: _areaController,
-              decoration: const InputDecoration(
-                labelText: 'Area / Locality',
-                border: OutlineInputBorder(),
+              SizedBox(height: 16),
+              _styledTextField(_areaController, 'Area / Locality', Icons.home),
+              SizedBox(height: 16),
+              _styledTextField(
+                _phoneController,
+                'Phone Number',
+                Icons.phone,
+                isNumber: true,
               ),
-            ),
-            const SizedBox(height: 16),
-
-            // Phone
-            TextFormField(
-              controller: _phoneController,
-              decoration: const InputDecoration(
-                labelText: 'Phone Number',
-                border: OutlineInputBorder(),
+              SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFFC4100),
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    'Submit',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
               ),
-              keyboardType: TextInputType.phone,
-            ),
-            const SizedBox(height: 24),
-
-            ElevatedButton(
-              onPressed: () {
-                print("User Info:");
-                print("Name: ${_nameController.text}");
-                print("Age: ${_ageController.text}");
-                print("Gender: $gender");
-                print("Occupation: $occupation");
-                print("State: $state");
-                print("City: $city");
-                print("Area: ${_areaController.text}");
-                print("Phone: ${_phoneController.text}");
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: const Text(
-                'Submit',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _styledTextField(
+    TextEditingController controller,
+    String label,
+    IconData icon, {
+    bool isNumber = false,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: Color(0xFFFC4100)),
+        filled: true,
+        fillColor: Color(0xFF2C4E80),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFFFC4100)),
+        ),
+        labelStyle: TextStyle(color: Color(0xFFFFC55A)),
+      ),
+      style: TextStyle(color: Colors.white),
+      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+    );
+  }
+
+  Widget _styledDropdown(
+    String label,
+    String? value,
+    List<String> options,
+    ValueChanged<String?> onChanged,
+    IconData icon,
+  ) {
+    return DropdownButtonFormField<String>(
+      value: value,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: Color(0xFFFC4100)),
+        filled: true,
+        fillColor: Color(0xFF2C4E80),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFFFC4100)),
+        ),
+        labelStyle: TextStyle(color: Color(0xFFFFC55A)),
+      ),
+      dropdownColor: Color(0xFF2C4E80),
+      style: TextStyle(color: Colors.white),
+      items: options.map((value) {
+        return DropdownMenuItem(
+          value: value,
+          child: Text(value, style: TextStyle(color: Colors.white)),
+        );
+      }).toList(),
+      onChanged: onChanged,
     );
   }
 }
