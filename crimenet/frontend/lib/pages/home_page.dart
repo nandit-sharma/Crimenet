@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_fonts/google_fonts.dart';
-import '../widgets/shared_layout.dart';
+import '../widgets/modern_button.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -58,198 +58,401 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return SharedLayout(
-      currentIndex: 0,
-      title: 'C R I M E N E T',
-      child: isLoading
-          ? Center(child: CircularProgressIndicator(color: Color(0xFFFC4100)))
-          : SafeArea(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFF101A30), Color(0xFF1E3050)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    children: [
-                      FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Color(0xFF1E3050), Color(0xFF0A1C3A)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 10,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: TextField(
-                            onChanged: (value) =>
-                                setState(() => searchQuery = value),
-                            style: GoogleFonts.roboto(color: Colors.white),
-                            decoration: InputDecoration(
-                              hintText: 'Search for crimes...',
-                              hintStyle: GoogleFonts.roboto(
-                                color: Color(0xFFFFC55A).withOpacity(0.7),
-                              ),
-                              border: InputBorder.none,
-                              prefixIcon: const Icon(
-                                Icons.search,
-                                color: Color(0xFFFC4100),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 14,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      Expanded(
-                        child: SlideTransition(
-                          position: _slideAnimation,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: _mainButton(
-                                      context,
-                                      'Report Crime',
-                                      '/report',
-                                      Icons.report,
-                                    ),
-                                  ),
-                                  SizedBox(width: 16),
-                                  Expanded(
-                                    child: _mainButton(
-                                      context,
-                                      'Emergency',
-                                      '/emergency',
-                                      Icons.warning,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+    return WillPopScope(
+      onWillPop: () async {
+        if (ModalRoute.of(context)?.settings.name != '/home') {
+          Navigator.pushReplacementNamed(context, '/home');
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'C R I M E N E T',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2,
+            ),
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.account_circle, color: Color(0xFFFFD180)),
+              onPressed: () => Navigator.pushNamed(context, '/profile'),
+            ),
+          ],
+        ),
+        drawer: Drawer(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF0A1C3A), Color(0xFF1E3050)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
             ),
-    );
-  }
-
-  Widget _mainButton(
-    BuildContext context,
-    String label,
-    String route,
-    IconData icon,
-  ) {
-    return StatefulBuilder(
-      builder: (context, setState) {
-        bool isHovered = false;
-        bool isPressed = false;
-
-        return MouseRegion(
-          onEnter: (_) => setState(() => isHovered = true),
-          onExit: (_) => setState(() => isHovered = false),
-          child: GestureDetector(
-            onTapDown: (_) {
-              setState(() => isPressed = true);
-              _controller.reverse();
-              Future.delayed(
-                Duration(milliseconds: 100),
-                () => _controller.forward(),
-              );
-            },
-            onTapUp: (_) => setState(() => isPressed = false),
-            onTapCancel: () => setState(() => isPressed = false),
-            child: AnimatedContainer(
-              duration: Duration(milliseconds: 200),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF1E3050), Color(0xFF0A1C3A)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: isHovered ? 15 : 10,
-                    offset: Offset(0, isHovered ? 6 : 4),
-                    spreadRadius: isHovered ? 1 : 0,
-                  ),
-                  if (isHovered)
-                    BoxShadow(
-                      color: Color(0xFFFC4100).withOpacity(0.2),
-                      blurRadius: 20,
-                      offset: Offset(0, 8),
-                    ),
-                ],
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
-                  splashColor: Color(0xFFFFC55A).withOpacity(0.3),
-                  highlightColor: Color(0xFFFC4100).withOpacity(0.2),
-                  onTap: () => Navigator.pushNamed(context, route),
+            child: ListView(
+              padding: EdgeInsets.only(top: 40),
+              children: [
+                FadeTransition(
+                  opacity: _fadeAnimation,
                   child: Container(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    padding: EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+                    child: Row(
                       children: [
-                        AnimatedContainer(
-                          duration: Duration(milliseconds: 200),
-                          transform: isHovered
-                              ? Matrix4.translationValues(0, -3, 0)
-                              : Matrix4.translationValues(0, 0, 0),
-                          child: Icon(icon, size: 44, color: Color(0xFFFC4100)),
-                        ),
-                        const SizedBox(height: 16),
-                        AnimatedContainer(
-                          duration: Duration(milliseconds: 200),
-                          transform: isHovered
-                              ? Matrix4.translationValues(0, -2, 0)
-                              : Matrix4.translationValues(0, 0, 0),
-                          child: Text(
-                            label,
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.poppins(
-                              fontSize: 18,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Color(0xFFFF3D00),
+                          child: Icon(
+                            Icons.account_circle,
+                            color: Colors.white,
+                            size: 40,
                           ),
+                        ),
+                        SizedBox(width: 16),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Welcome',
+                              style: GoogleFonts.poppins(
+                                color: Color(0xFFFFD180),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'User',
+                              style: GoogleFonts.roboto(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ),
                 ),
-              ),
+                Divider(
+                  color: Color(0xFFFFD180),
+                  thickness: 1,
+                  indent: 16,
+                  endIndent: 16,
+                ),
+                _drawerMenuItem(
+                  context,
+                  Icons.insights,
+                  'Insights',
+                  '/insights',
+                ),
+                _drawerMenuItem(
+                  context,
+                  Icons.feedback,
+                  'Feedback',
+                  '/feedback',
+                ),
+                _drawerMenuItem(
+                  context,
+                  Icons.admin_panel_settings,
+                  'Admin Panel',
+                  '/admin',
+                ),
+                _drawerMenuItem(context, Icons.description, 'Terms', '/terms'),
+                _drawerMenuItem(
+                  context,
+                  Icons.privacy_tip,
+                  'Privacy',
+                  '/privacy',
+                ),
+                _drawerMenuItem(
+                  context,
+                  Icons.folder_shared,
+                  'Case Details',
+                  '/case_details',
+                ),
+                _drawerMenuItem(
+                  context,
+                  Icons.history,
+                  'AI History',
+                  '/ai_history',
+                ),
+              ],
             ),
           ),
-        );
-      },
+        ),
+        body: isLoading
+            ? Center(child: CircularProgressIndicator(color: Color(0xFFFF3D00)))
+            : Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  children: [
+                    FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Color(0xFF1E3050), Color(0xFF0A1C3A)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: TextField(
+                          onChanged: (value) =>
+                              setState(() => searchQuery = value),
+                          style: GoogleFonts.roboto(color: Colors.white),
+                          decoration: InputDecoration(
+                            hintText: 'Search for crimes...',
+                            hintStyle: GoogleFonts.roboto(
+                              color: Color(0xFFFFD180).withOpacity(0.7),
+                            ),
+                            border: InputBorder.none,
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              color: Color(0xFFFF3D00),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 24),
+                    FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Color(0xFF1E3050), Color(0xFF0A1C3A)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Recent Alerts',
+                              style: GoogleFonts.poppins(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFFFD180),
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: 2,
+                              itemBuilder: (context, index) {
+                                return SlideTransition(
+                                  position:
+                                      Tween<Offset>(
+                                        begin: Offset(0.1 * (index + 1), 0),
+                                        end: Offset.zero,
+                                      ).animate(
+                                        CurvedAnimation(
+                                          parent: _controller,
+                                          curve: Curves.easeOut,
+                                        ),
+                                      ),
+                                  child: Card(
+                                    child: ListTile(
+                                      title: Text(
+                                        'Alert: Suspicious Activity in [City]',
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        'Reported on ${DateTime.now().toLocal()}',
+                                        style: GoogleFonts.roboto(
+                                          color: Color(0xFFFFD180),
+                                        ),
+                                      ),
+                                      trailing: Icon(
+                                        Icons.warning,
+                                        color: Color(0xFFFF3D00),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    Expanded(
+                      child: SlideTransition(
+                        position: _slideAnimation,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    height: 56,
+                                    child: ElevatedButton.icon(
+                                      icon: Icon(
+                                        Icons.report,
+                                        color: Colors.white,
+                                      ),
+                                      label: Text(
+                                        'Report Crime',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color(0xFFFC4100),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            18,
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () => Navigator.pushNamed(
+                                        context,
+                                        '/report',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 16),
+                                Expanded(
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    height: 56,
+                                    child: ElevatedButton.icon(
+                                      icon: Icon(
+                                        Icons.warning,
+                                        color: Colors.white,
+                                      ),
+                                      label: Text(
+                                        'Emergency',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color(0xFFFC4100),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            18,
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () => Navigator.pushNamed(
+                                        context,
+                                        '/emergency',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Color(0xFF1E3050),
+          selectedItemColor: Color(0xFFFF3D00),
+          unselectedItemColor: Colors.white.withOpacity(0.7),
+          currentIndex: 0,
+          onTap: (index) {
+            switch (index) {
+              case 0:
+                Navigator.pushReplacementNamed(context, '/home');
+                break;
+              case 1:
+                Navigator.pushReplacementNamed(context, '/recent_cases');
+                break;
+              case 2:
+                Navigator.pushReplacementNamed(context, '/community');
+                break;
+              case 3:
+                Navigator.pushReplacementNamed(context, '/ai_detective');
+                break;
+            }
+          },
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.history),
+              label: 'Recent Cases',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.group),
+              label: 'Community',
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.psychology), label: 'AI'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _drawerMenuItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String route,
+  ) {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: Card(
+        color: Colors.transparent,
+        elevation: 0,
+        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        child: ListTile(
+          leading: Icon(icon, color: Color(0xFFFFD180)),
+          title: Text(
+            title,
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          trailing: Icon(
+            Icons.arrow_forward_ios,
+            size: 16,
+            color: Color(0xFFFF3D00),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          onTap: () {
+            Navigator.pop(context);
+            Navigator.pushNamed(context, route);
+          },
+        ),
+      ),
     );
   }
 }
