@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_fonts/google_fonts.dart';
-import '../widgets/modern_button.dart';
+import '../widgets/shared_layout.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -58,130 +58,13 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (ModalRoute.of(context)?.settings.name != '/home') {
-          Navigator.pushReplacementNamed(context, '/home');
-          return false;
-        }
-        return true;
-      },
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          title: Text(
-            'C R I M E N E T',
-            style: GoogleFonts.poppins(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 2,
-            ),
-          ),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.account_circle, color: Color(0xFFFFC55A)),
-              onPressed: () => Navigator.pushNamed(context, '/profile'),
-            ),
-          ],
-        ),
-        drawer: Drawer(
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF101A30), Color(0xFF1E3050)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: ListView(
-              padding: EdgeInsets.only(top: 40),
-              children: [
-                FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 32, horizontal: 16),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Color(0xFFFC4100),
-                          child: Icon(
-                            Icons.account_circle,
-                            color: Colors.white,
-                            size: 40,
-                          ),
-                        ),
-                        SizedBox(width: 16),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Welcome',
-                              style: GoogleFonts.poppins(
-                                color: Color(0xFFFFC55A),
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              'User',
-                              style: GoogleFonts.roboto(
-                                color: Colors.white,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Divider(
-                  color: Color(0xFFFFC55A),
-                  thickness: 1,
-                  indent: 16,
-                  endIndent: 16,
-                ),
-                _drawerMenuItem(
-                  context,
-                  Icons.insights,
-                  'Insights',
-                  '/insights',
-                ),
-                _drawerMenuItem(
-                  context,
-                  Icons.feedback,
-                  'Feedback',
-                  '/feedback',
-                ),
-                _drawerMenuItem(
-                  context,
-                  Icons.admin_panel_settings,
-                  'Admin Panel',
-                  '/admin',
-                ),
-                _drawerMenuItem(context, Icons.description, 'Terms', '/terms'),
-                _drawerMenuItem(
-                  context,
-                  Icons.privacy_tip,
-                  'Privacy',
-                  '/privacy',
-                ),
-                _drawerMenuItem(
-                  context,
-                  Icons.folder_shared,
-                  'Case Details',
-                  '/case_details',
-                ),
-              ],
-            ),
-          ),
-        ),
-        body: isLoading
-            ? Center(child: CircularProgressIndicator(color: Color(0xFFFC4100)))
-            : Container(
+    return SharedLayout(
+      currentIndex: 0,
+      title: 'C R I M E N E T',
+      child: isLoading
+          ? Center(child: CircularProgressIndicator(color: Color(0xFFFC4100)))
+          : SafeArea(
+              child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Color(0xFF101A30), Color(0xFF1E3050)],
@@ -189,125 +72,88 @@ class _HomePageState extends State<HomePage>
                     end: Alignment.bottomRight,
                   ),
                 ),
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      children: [
-                        FadeTransition(
-                          opacity: _fadeAnimation,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [Color(0xFF1E3050), Color(0xFF101A30)],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderRadius: BorderRadius.circular(18),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 10,
-                                  offset: Offset(0, 4),
-                                ),
-                              ],
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    children: [
+                      FadeTransition(
+                        opacity: _fadeAnimation,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xFF1E3050), Color(0xFF0A1C3A)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
                             ),
-                            child: TextField(
-                              onChanged: (value) =>
-                                  setState(() => searchQuery = value),
-                              style: GoogleFonts.roboto(color: Colors.white),
-                              decoration: InputDecoration(
-                                hintText: 'Search for crimes...',
-                                hintStyle: GoogleFonts.roboto(
-                                  color: Color(0xFFFFC55A).withOpacity(0.7),
-                                ),
-                                border: InputBorder.none,
-                                prefixIcon: const Icon(
-                                  Icons.search,
-                                  color: Color(0xFFFC4100),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 14,
-                                ),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 10,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: TextField(
+                            onChanged: (value) =>
+                                setState(() => searchQuery = value),
+                            style: GoogleFonts.roboto(color: Colors.white),
+                            decoration: InputDecoration(
+                              hintText: 'Search for crimes...',
+                              hintStyle: GoogleFonts.roboto(
+                                color: Color(0xFFFFC55A).withOpacity(0.7),
+                              ),
+                              border: InputBorder.none,
+                              prefixIcon: const Icon(
+                                Icons.search,
+                                color: Color(0xFFFC4100),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 32),
-                        Expanded(
-                          child: SlideTransition(
-                            position: _slideAnimation,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      child: _mainButton(
-                                        context,
-                                        'Report Crime',
-                                        '/report',
-                                        Icons.report,
-                                      ),
+                      ),
+                      const SizedBox(height: 32),
+                      Expanded(
+                        child: SlideTransition(
+                          position: _slideAnimation,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: _mainButton(
+                                      context,
+                                      'Report Crime',
+                                      '/report',
+                                      Icons.report,
                                     ),
-                                    SizedBox(width: 16),
-                                    Expanded(
-                                      child: _mainButton(
-                                        context,
-                                        'Emergency',
-                                        '/emergency',
-                                        Icons.warning,
-                                      ),
+                                  ),
+                                  SizedBox(width: 16),
+                                  Expanded(
+                                    child: _mainButton(
+                                      context,
+                                      'Emergency',
+                                      '/emergency',
+                                      Icons.warning,
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Color(0xFF1E3050),
-          selectedItemColor: Color(0xFFFC4100),
-          unselectedItemColor: Colors.white.withOpacity(0.7),
-          currentIndex: 0,
-          onTap: (index) {
-            switch (index) {
-              case 0:
-                Navigator.pushReplacementNamed(context, '/home');
-                break;
-              case 1:
-                Navigator.pushReplacementNamed(context, '/recent_cases');
-                break;
-              case 2:
-                Navigator.pushReplacementNamed(context, '/community');
-                break;
-              case 3:
-                Navigator.pushReplacementNamed(context, '/ai_detective');
-                break;
-            }
-          },
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.history),
-              label: 'Recent Cases',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.group),
-              label: 'Community',
-            ),
-            BottomNavigationBarItem(icon: Icon(Icons.psychology), label: 'AI'),
-          ],
-        ),
-      ),
     );
   }
 
@@ -317,100 +163,93 @@ class _HomePageState extends State<HomePage>
     String route,
     IconData icon,
   ) {
-    return GestureDetector(
-      onTapDown: (_) {
-        _controller.reverse();
-        Future.delayed(
-          Duration(milliseconds: 100),
-          () => _controller.forward(),
-        );
-      },
-      child: ScaleTransition(
-        scale: Tween<double>(begin: 1.0, end: 0.95).animate(
-          CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(18),
-            splashColor: Color(0xFFFFC55A).withOpacity(0.3),
-            highlightColor: Color(0xFFFC4100).withOpacity(0.2),
-            onTap: () => Navigator.pushNamed(context, route),
-            child: Container(
+    return StatefulBuilder(
+      builder: (context, setState) {
+        bool isHovered = false;
+        bool isPressed = false;
+
+        return MouseRegion(
+          onEnter: (_) => setState(() => isHovered = true),
+          onExit: (_) => setState(() => isHovered = false),
+          child: GestureDetector(
+            onTapDown: (_) {
+              setState(() => isPressed = true);
+              _controller.reverse();
+              Future.delayed(
+                Duration(milliseconds: 100),
+                () => _controller.forward(),
+              );
+            },
+            onTapUp: (_) => setState(() => isPressed = false),
+            onTapCancel: () => setState(() => isPressed = false),
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 200),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFF1E3050), Color(0xFF101A30)],
+                  colors: [Color(0xFF1E3050), Color(0xFF0A1C3A)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.2),
-                    blurRadius: 10,
-                    offset: Offset(0, 4),
+                    blurRadius: isHovered ? 15 : 10,
+                    offset: Offset(0, isHovered ? 6 : 4),
+                    spreadRadius: isHovered ? 1 : 0,
                   ),
+                  if (isHovered)
+                    BoxShadow(
+                      color: Color(0xFFFC4100).withOpacity(0.2),
+                      blurRadius: 20,
+                      offset: Offset(0, 8),
+                    ),
                 ],
               ),
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(icon, size: 44, color: Color(0xFFFC4100)),
-                  const SizedBox(height: 16),
-                  Text(
-                    label,
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  splashColor: Color(0xFFFFC55A).withOpacity(0.3),
+                  highlightColor: Color(0xFFFC4100).withOpacity(0.2),
+                  onTap: () => Navigator.pushNamed(context, route),
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AnimatedContainer(
+                          duration: Duration(milliseconds: 200),
+                          transform: isHovered
+                              ? Matrix4.translationValues(0, -3, 0)
+                              : Matrix4.translationValues(0, 0, 0),
+                          child: Icon(icon, size: 44, color: Color(0xFFFC4100)),
+                        ),
+                        const SizedBox(height: 16),
+                        AnimatedContainer(
+                          duration: Duration(milliseconds: 200),
+                          transform: isHovered
+                              ? Matrix4.translationValues(0, -2, 0)
+                              : Matrix4.translationValues(0, 0, 0),
+                          child: Text(
+                            label,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _drawerMenuItem(
-    BuildContext context,
-    IconData icon,
-    String title,
-    String route,
-  ) {
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: Card(
-        color: Colors.transparent,
-        elevation: 0,
-        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        child: ListTile(
-          leading: Icon(icon, color: Color(0xFFFFC55A)),
-          title: Text(
-            title,
-            style: GoogleFonts.poppins(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          trailing: Icon(
-            Icons.arrow_forward_ios,
-            size: 16,
-            color: Color(0xFFFC4100),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.pushNamed(context, route);
-          },
-        ),
-      ),
+        );
+      },
     );
   }
 }

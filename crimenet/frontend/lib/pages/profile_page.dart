@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:crimenet/pages/sign_up.dart';
-import 'package:crimenet/pages/log_in.dart';
-import '../widgets/modern_button.dart';
+import '../widgets/shared_layout.dart';
+import 'sign_up.dart';
+import 'Log_in.dart';
 
 class AuthService {
   bool isLoggedIn() {
@@ -30,28 +30,11 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isAuthenticated = _authService.isLoggedIn();
     Map<String, String> userDetails = _authService.getUserDetails();
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: Text('Profile', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: isAuthenticated
-            ? [
-                IconButton(
-                  icon: Icon(Icons.edit, color: Colors.white),
-                  tooltip: 'Edit Profile',
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: Icon(Icons.logout, color: Colors.white),
-                  tooltip: 'Log Out',
-                  onPressed: () {},
-                ),
-              ]
-            : [],
-      ),
-      body: SafeArea(
+    return SharedLayout(
+      currentIndex: -1,
+      title: 'Profile',
+      showBackButton: true,
+      child: SafeArea(
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -245,27 +228,14 @@ class ProfilePage extends StatelessWidget {
             style: TextStyle(fontSize: 16, color: Colors.white),
           ),
           SizedBox(height: 40),
-          ModernButton(
-            text: 'Sign Up',
-            icon: Icons.person_add_alt_1_outlined,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SignUpPage()),
-              );
-            },
-          ),
-          SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton.icon(
-              icon: Icon(Icons.login_outlined, color: Color(0xFFFC4100)),
-              label: Text('Log In', style: TextStyle(color: Color(0xFFFC4100))),
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: Color(0xFFFC4100), width: 2),
-                minimumSize: Size(double.infinity, 50),
-                padding: EdgeInsets.symmetric(vertical: 15),
-                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            height: 50,
+            child: ElevatedButton.icon(
+              icon: Icon(Icons.person_add_alt_1_outlined, color: Colors.white),
+              label: Text('Sign Up', style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFFC4100),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18),
                 ),
@@ -273,8 +243,27 @@ class ProfilePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  MaterialPageRoute(builder: (context) => SignUpPage()),
                 );
+              },
+            ),
+          ),
+          SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: ElevatedButton.icon(
+              icon: Icon(Icons.login_outlined, color: Color(0xFFFC4100)),
+              label: Text('Log In', style: TextStyle(color: Color(0xFFFC4100))),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                side: BorderSide(color: Color(0xFFFC4100), width: 2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/login');
               },
             ),
           ),
