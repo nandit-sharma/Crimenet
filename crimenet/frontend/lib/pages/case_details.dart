@@ -1,89 +1,105 @@
+import '../widgets/modern_button.dart';
 import 'package:flutter/material.dart';
 
 class CaseDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text('Case Details', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Case Title',
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFFFFC55A),
-              ),
+      body: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF101A30), Color(0xFF1E3050)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            SizedBox(height: 8),
-            Text(
-              'Description of the case goes here.',
-              style: TextStyle(color: Colors.white),
-            ),
-            SizedBox(height: 8),
-            Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Color(0xFF2C4E80),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                'Evidence: [Uploaded files/images]',
-                style: TextStyle(color: Color(0xFFFFC55A)),
-              ),
-            ),
-            SizedBox(height: 8),
-            Row(
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.info, color: Color(0xFFFC4100)),
-                SizedBox(width: 8),
                 Text(
-                  'Status: Open',
+                  'Case Title',
                   style: TextStyle(
-                    color: Colors.white,
+                    fontSize: 28,
                     fontWeight: FontWeight.bold,
+                    color: Color(0xFFFFC55A),
                   ),
                 ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Color(0xFF2C4E80),
-                  borderRadius: BorderRadius.circular(12),
+                SizedBox(height: 12),
+                Text(
+                  'Description of the case goes here.',
+                  style: TextStyle(color: Colors.white, fontSize: 17),
                 ),
-                child: ListView(
+                SizedBox(height: 16),
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF2C4E80), Color(0xFF101A30)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    'Evidence: [Uploaded files/images]',
+                    style: TextStyle(color: Color(0xFFFFC55A), fontSize: 16),
+                  ),
+                ),
+                SizedBox(height: 16),
+                Row(
                   children: [
+                    Icon(Icons.info, color: Color(0xFFFC4100)),
+                    SizedBox(width: 12),
                     Text(
-                      'Comments/discussions section',
-                      style: TextStyle(color: Colors.white),
+                      'Status: Open',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ),
-            SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFFC4100),
+                SizedBox(height: 24),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF2C4E80), Color(0xFF101A30)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: ListView(
+                      children: [
+                        Text(
+                          'Comments/discussions section',
+                          style: TextStyle(color: Colors.white, fontSize: 17),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                onPressed: () {},
-                child: Text(
-                  'Contribute Clues or Suggestions',
-                  style: TextStyle(color: Colors.white),
+                SizedBox(height: 24),
+                ModernButton(
+                  text: 'Contribute Clues or Suggestions',
+                  icon: Icons.edit,
+                  onPressed: () {},
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

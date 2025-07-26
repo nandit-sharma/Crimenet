@@ -1,3 +1,4 @@
+import '../widgets/modern_button.dart';
 import 'package:flutter/material.dart';
 
 class AiDetectivePage extends StatelessWidget {
@@ -9,62 +10,72 @@ class AiDetectivePage extends StatelessWidget {
         return false;
       },
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
           leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
           ),
           title: Text('AI Detective', style: TextStyle(color: Colors.white)),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
         ),
-        body: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'AI Crime Prediction',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFFFFC55A),
-                ),
+        body: SafeArea(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF101A30), Color(0xFF1E3050)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-              SizedBox(height: 20),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Enter clues',
-                  prefixIcon: Icon(Icons.search, color: Color(0xFFFC4100)),
-                ),
-                style: TextStyle(color: Colors.white),
-              ),
-              SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFC4100),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(28),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'AI Crime Prediction',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFFFC55A),
+                    ),
                   ),
-                  onPressed: () {},
-                  child: Text(
-                    'Get Prediction',
+                  SizedBox(height: 24),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Enter clues',
+                      prefixIcon: Icon(Icons.search, color: Color(0xFFFC4100)),
+                    ),
                     style: TextStyle(color: Colors.white),
                   ),
-                ),
+                  SizedBox(height: 32),
+                  ModernButton(
+                    text: 'Get Prediction',
+                    icon: Icons.psychology,
+                    onPressed: () {},
+                  ),
+                  SizedBox(height: 32),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF2C4E80), Color(0xFF101A30)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Text(
+                      'Prediction result will appear here.',
+                      style: TextStyle(color: Colors.white, fontSize: 17),
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 24),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Color(0xFF2C4E80),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  'Prediction result will appear here.',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),

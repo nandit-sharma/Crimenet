@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:crimenet/pages/sign_up.dart';
 import 'package:crimenet/pages/log_in.dart';
+import '../widgets/modern_button.dart';
 
 class AuthService {
   bool isLoggedIn() {
@@ -30,9 +31,10 @@ class ProfilePage extends StatelessWidget {
     bool isAuthenticated = _authService.isLoggedIn();
     Map<String, String> userDetails = _authService.getUserDetails();
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text('Profile', style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFF00215E),
+        backgroundColor: Colors.transparent,
         elevation: 0,
         actions: isAuthenticated
             ? [
@@ -49,18 +51,20 @@ class ProfilePage extends StatelessWidget {
               ]
             : [],
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF00215E), Color(0xFF2C4E80)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      body: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF101A30), Color(0xFF1E3050)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
-        ),
-        child: Center(
-          child: isAuthenticated
-              ? _buildUserProfile(context, userDetails)
-              : _buildGuestProfile(context),
+          child: Center(
+            child: isAuthenticated
+                ? _buildUserProfile(context, userDetails)
+                : _buildGuestProfile(context),
+          ),
         ),
       ),
     );
@@ -82,6 +86,13 @@ class ProfilePage extends StatelessWidget {
               gradient: LinearGradient(
                 colors: [Color(0xFFFC4100), Color(0xFFFFC55A)],
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0xFFFC4100).withOpacity(0.3),
+                  blurRadius: 20,
+                  offset: Offset(0, 8),
+                ),
+              ],
             ),
             padding: EdgeInsets.all(4),
             child: CircleAvatar(
@@ -165,8 +176,12 @@ class ProfilePage extends StatelessWidget {
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
           decoration: BoxDecoration(
-            color: Color(0xFF2C4E80),
-            borderRadius: BorderRadius.circular(12.0),
+            gradient: LinearGradient(
+              colors: [Color(0xFF2C4E80), Color(0xFF101A30)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(16.0),
             border: Border.all(color: Color(0xFFFC4100), width: 1),
           ),
           child: Text(
@@ -195,6 +210,13 @@ class ProfilePage extends StatelessWidget {
               gradient: LinearGradient(
                 colors: [Color(0xFFFC4100), Color(0xFFFFC55A)],
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0xFFFC4100).withOpacity(0.3),
+                  blurRadius: 20,
+                  offset: Offset(0, 8),
+                ),
+              ],
             ),
             padding: EdgeInsets.all(4),
             child: CircleAvatar(
@@ -223,27 +245,15 @@ class ProfilePage extends StatelessWidget {
             style: TextStyle(fontSize: 16, color: Colors.white),
           ),
           SizedBox(height: 40),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              icon: Icon(Icons.person_add_alt_1_outlined, color: Colors.white),
-              label: Text('Sign Up', style: TextStyle(color: Colors.white)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFFC4100),
-                minimumSize: Size(double.infinity, 50),
-                padding: EdgeInsets.symmetric(vertical: 15),
-                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SignUpPage()),
-                );
-              },
-            ),
+          ModernButton(
+            text: 'Sign Up',
+            icon: Icons.person_add_alt_1_outlined,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SignUpPage()),
+              );
+            },
           ),
           SizedBox(height: 20),
           SizedBox(
@@ -257,7 +267,7 @@ class ProfilePage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 15),
                 textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(18),
                 ),
               ),
               onPressed: () {

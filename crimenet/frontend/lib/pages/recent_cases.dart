@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
+import '../widgets/modern_button.dart';
 
 class RecentCasesPage extends StatefulWidget {
   @override
@@ -31,15 +32,9 @@ class _RecentCasesPageState extends State<RecentCasesPage> {
     setState(() {
       stateCityMap = data.map((k, v) => MapEntry(k, List<String>.from(v)));
       stateOptions = stateCityMap.keys.toList();
-      selectedState = stateOptions.contains('J&K')
-          ? 'J&K'
-          : (stateOptions.isNotEmpty ? stateOptions[0] : null);
-      cityOptions = selectedState != null
-          ? stateCityMap[selectedState!] ?? []
-          : [];
-      selectedCity = cityOptions.contains('Jammu')
-          ? 'Jammu'
-          : (cityOptions.isNotEmpty ? cityOptions[0] : null);
+      selectedState = null;
+      cityOptions = [];
+      selectedCity = null;
       isLoading = false;
     });
   }
@@ -48,7 +43,7 @@ class _RecentCasesPageState extends State<RecentCasesPage> {
     setState(() {
       selectedState = state;
       cityOptions = state != null ? stateCityMap[state] ?? [] : [];
-      selectedCity = cityOptions.isNotEmpty ? cityOptions[0] : null;
+      selectedCity = null;
     });
   }
 
@@ -60,6 +55,7 @@ class _RecentCasesPageState extends State<RecentCasesPage> {
         return false;
       },
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
           leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -69,103 +65,286 @@ class _RecentCasesPageState extends State<RecentCasesPage> {
             'Recent Cases Solved',
             style: TextStyle(color: Colors.white),
           ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
         ),
         body: isLoading
             ? Center(child: CircularProgressIndicator(color: Color(0xFFFC4100)))
-            : ListView(
-                padding: EdgeInsets.all(20),
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Color(0xFF2C4E80),
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xFF2C4E80).withOpacity(0.08),
-                          blurRadius: 6,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          _filterDropdown(
-                            'State',
-                            stateOptions,
-                            selectedState,
-                            (v) => updateCities(v),
-                            color: Color(0xFF2C4E80),
-                          ),
-                          SizedBox(width: 8),
-                          _filterDropdown(
-                            'City',
-                            cityOptions,
-                            selectedCity,
-                            (v) => setState(() => selectedCity = v),
-                            color: Color(0xFF2C4E80),
-                          ),
-                          SizedBox(width: 8),
-                          _filterDropdown(
-                            'Type',
-                            types,
-                            selectedType,
-                            (v) => setState(() => selectedType = v),
-                            color: Color(0xFF2C4E80),
-                          ),
-                          SizedBox(width: 8),
-                          _dateFilter(context),
-                          SizedBox(width: 8),
-                          _timeFilter(context),
-                        ],
-                      ),
-                    ),
+            : Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF101A30), Color(0xFF1E3050)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  SizedBox(height: 16),
-                  Card(
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.check_circle,
-                        color: Color(0xFFFC4100),
-                      ),
-                      title: Text(
-                        'Case 1',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                ),
+                child: SafeArea(
+                  child: ListView(
+                    padding: EdgeInsets.only(
+                      top: 16,
+                      left: 20,
+                      right: 20,
+                      bottom: 0,
+                    ),
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Color(0xFF2C4E80), Color(0xFF101A30)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xFF2C4E80).withOpacity(0.08),
+                              blurRadius: 6,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: DropdownButtonFormField<String>(
+                                    value: selectedState,
+                                    isExpanded: true,
+                                    items: stateOptions
+                                        .map(
+                                          (s) => DropdownMenuItem(
+                                            value: s,
+                                            child: Text(
+                                              s,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                                    onChanged: (v) => updateCities(v),
+                                    decoration: InputDecoration(
+                                      labelText: 'State',
+                                      hintText: 'State',
+                                      prefixIcon: Icon(
+                                        Icons.map,
+                                        color: Color(0xFFFC4100),
+                                      ),
+                                      filled: true,
+                                      fillColor: Color(0xFF1E3050),
+                                      labelStyle: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                      hintStyle: TextStyle(
+                                        color: Colors.white70,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide(
+                                          color: Color(0xFFFC4100),
+                                        ),
+                                      ),
+                                    ),
+                                    dropdownColor: Color(0xFF1E3050),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                SizedBox(width: 12),
+                                Expanded(
+                                  child: DropdownButtonFormField<String>(
+                                    value: selectedCity,
+                                    isExpanded: true,
+                                    items: cityOptions
+                                        .map(
+                                          (c) => DropdownMenuItem(
+                                            value: c,
+                                            child: Text(
+                                              c,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                                    onChanged: (v) =>
+                                        setState(() => selectedCity = v),
+                                    decoration: InputDecoration(
+                                      labelText: 'City',
+                                      hintText: 'City',
+                                      prefixIcon: Icon(
+                                        Icons.location_city,
+                                        color: Color(0xFFFC4100),
+                                      ),
+                                      filled: true,
+                                      fillColor: Color(0xFF1E3050),
+                                      labelStyle: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                      hintStyle: TextStyle(
+                                        color: Colors.white70,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide(
+                                          color: Color(0xFFFC4100),
+                                        ),
+                                      ),
+                                    ),
+                                    dropdownColor: Color(0xFF1E3050),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 12),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: DropdownButtonFormField<String>(
+                                    value: selectedType,
+                                    isExpanded: true,
+                                    items: types
+                                        .map(
+                                          (t) => DropdownMenuItem(
+                                            value: t,
+                                            child: Text(
+                                              t,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                                    onChanged: (v) =>
+                                        setState(() => selectedType = v),
+                                    decoration: InputDecoration(
+                                      labelText: 'Type',
+                                      hintText: 'Type',
+                                      prefixIcon: Icon(
+                                        Icons.category,
+                                        color: Color(0xFFFC4100),
+                                      ),
+                                      filled: true,
+                                      fillColor: Color(0xFF1E3050),
+                                      labelStyle: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                      hintStyle: TextStyle(
+                                        color: Colors.white70,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide(
+                                          color: Color(0xFFFC4100),
+                                        ),
+                                      ),
+                                    ),
+                                    dropdownColor: Color(0xFF1E3050),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                SizedBox(width: 12),
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () async {
+                                      final picked = await showDatePicker(
+                                        context: context,
+                                        initialDate:
+                                            selectedDate ?? DateTime.now(),
+                                        firstDate: DateTime(2000),
+                                        lastDate: DateTime(2100),
+                                      );
+                                      if (picked != null)
+                                        setState(() => selectedDate = picked);
+                                    },
+                                    child: InputDecorator(
+                                      decoration: InputDecoration(
+                                        labelText: 'Date',
+                                        prefixIcon: Icon(
+                                          Icons.date_range,
+                                          color: Color(0xFFFC4100),
+                                        ),
+                                        filled: true,
+                                        fillColor: Color(0xFF1E3050),
+                                        labelStyle: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: Color(0xFFFC4100),
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        selectedDate == null
+                                            ? 'Select Date'
+                                            : '${selectedDate!.toLocal()}'
+                                                  .split(' ')[0],
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 12),
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () async {
+                                      final picked = await showTimePicker(
+                                        context: context,
+                                        initialTime:
+                                            selectedTime ?? TimeOfDay.now(),
+                                      );
+                                      if (picked != null)
+                                        setState(() => selectedTime = picked);
+                                    },
+                                    child: InputDecorator(
+                                      decoration: InputDecoration(
+                                        labelText: 'Time',
+                                        prefixIcon: Icon(
+                                          Icons.access_time,
+                                          color: Color(0xFFFC4100),
+                                        ),
+                                        filled: true,
+                                        fillColor: Color(0xFF1E3050),
+                                        labelStyle: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: Color(0xFFFC4100),
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        selectedTime == null
+                                            ? 'Select Time'
+                                            : selectedTime!.format(context),
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      subtitle: Text(
-                        'Solved',
-                        style: TextStyle(color: Color(0xFFFFC55A)),
-                      ),
-                    ),
+                      SizedBox(height: 16),
+                      // ... rest of the list ...
+                    ],
                   ),
-                  Card(
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.check_circle,
-                        color: Color(0xFFFC4100),
-                      ),
-                      title: Text(
-                        'Case 2',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      subtitle: Text(
-                        'Solved',
-                        style: TextStyle(color: Color(0xFFFFC55A)),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import '../widgets/modern_button.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -59,102 +60,104 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text('Sign Up', style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFF00215E),
+        backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF00215E), Color(0xFF2C4E80)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      body: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF101A30), Color(0xFF1E3050)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
-        ),
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(24),
-          child: Column(
-            children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [Color(0xFFFC4100), Color(0xFFFFC55A)],
-                  ),
-                ),
-                child: Icon(Icons.person_add, color: Colors.white, size: 48),
-              ),
-              SizedBox(height: 24),
-              _styledTextField(_nameController, 'Full Name', Icons.person),
-              SizedBox(height: 16),
-              _styledTextField(
-                _ageController,
-                'Age',
-                Icons.cake,
-                isNumber: true,
-              ),
-              SizedBox(height: 16),
-              _styledDropdown(
-                'Gender',
-                gender,
-                genderOptions,
-                (value) => setState(() => gender = value),
-                Icons.wc,
-              ),
-              SizedBox(height: 16),
-              _styledDropdown(
-                'Occupation',
-                occupation,
-                occupationOptions,
-                (value) => setState(() => occupation = value),
-                Icons.work,
-              ),
-              SizedBox(height: 16),
-              _styledDropdown('State', state, stateOptions, (value) {
-                if (value != null) {
-                  setState(() => state = value);
-                  updateCities(value);
-                }
-              }, Icons.map),
-              SizedBox(height: 16),
-              _styledDropdown(
-                'City',
-                city,
-                cityOptions,
-                (value) => setState(() => city = value),
-                Icons.location_city,
-              ),
-              SizedBox(height: 16),
-              _styledTextField(_areaController, 'Area / Locality', Icons.home),
-              SizedBox(height: 16),
-              _styledTextField(
-                _phoneController,
-                'Phone Number',
-                Icons.phone,
-                isNumber: true,
-              ),
-              SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFC4100),
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(24),
+            child: Column(
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [Color(0xFFFC4100), Color(0xFFFFC55A)],
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xFFFC4100).withOpacity(0.3),
+                        blurRadius: 20,
+                        offset: Offset(0, 8),
+                      ),
+                    ],
                   ),
-                  child: Text(
-                    'Submit',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
+                  child: Icon(Icons.person_add, color: Colors.white, size: 48),
                 ),
-              ),
-            ],
+                SizedBox(height: 24),
+                _styledTextField(_nameController, 'Full Name', Icons.person),
+                SizedBox(height: 16),
+                _styledTextField(
+                  _ageController,
+                  'Age',
+                  Icons.cake,
+                  isNumber: true,
+                ),
+                SizedBox(height: 16),
+                _styledDropdown(
+                  'Gender',
+                  gender,
+                  genderOptions,
+                  (value) => setState(() => gender = value),
+                  Icons.wc,
+                ),
+                SizedBox(height: 16),
+                _styledDropdown(
+                  'Occupation',
+                  occupation,
+                  occupationOptions,
+                  (value) => setState(() => occupation = value),
+                  Icons.work,
+                ),
+                SizedBox(height: 16),
+                _styledDropdown('State', state, stateOptions, (value) {
+                  if (value != null) {
+                    setState(() => state = value);
+                    updateCities(value);
+                  }
+                }, Icons.map),
+                SizedBox(height: 16),
+                _styledDropdown(
+                  'City',
+                  city,
+                  cityOptions,
+                  (value) => setState(() => city = value),
+                  Icons.location_city,
+                ),
+                SizedBox(height: 16),
+                _styledTextField(
+                  _areaController,
+                  'Area / Locality',
+                  Icons.home,
+                ),
+                SizedBox(height: 16),
+                _styledTextField(
+                  _phoneController,
+                  'Phone Number',
+                  Icons.phone,
+                  isNumber: true,
+                ),
+                SizedBox(height: 24),
+                ModernButton(
+                  text: 'Submit',
+                  icon: Icons.check,
+                  onPressed: () {},
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -175,7 +178,7 @@ class _SignUpPageState extends State<SignUpPage> {
         filled: true,
         fillColor: Color(0xFF2C4E80),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(18),
           borderSide: BorderSide(color: Color(0xFFFC4100)),
         ),
         labelStyle: TextStyle(color: Color(0xFFFFC55A)),
@@ -200,7 +203,7 @@ class _SignUpPageState extends State<SignUpPage> {
         filled: true,
         fillColor: Color(0xFF2C4E80),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(18),
           borderSide: BorderSide(color: Color(0xFFFC4100)),
         ),
         labelStyle: TextStyle(color: Color(0xFFFFC55A)),

@@ -1,6 +1,8 @@
 import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:google_fonts/google_fonts.dart';
+import '../widgets/modern_button.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -8,16 +10,37 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   String searchQuery = '';
   Map<String, List<String>> stateCityMap = {};
   List<String> stateOptions = [];
   List<String> cityOptions = [];
   bool isLoading = true;
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+    _slideAnimation = Tween<Offset>(
+      begin: Offset(0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _controller.forward();
     loadStateCityData();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   Future<void> loadStateCityData() async {
@@ -44,15 +67,21 @@ class _HomePageState extends State<HomePage> {
         return true;
       },
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
-          title: const Text(
-            'ᴄ ʀ ɪ ᴍ ᴇ ɴ ᴇ ᴛ',
-            style: TextStyle(color: Colors.white),
+          title: Text(
+            'C R I M E N E T',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2,
+            ),
           ),
-          backgroundColor: Color(0xFF00215E),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
           actions: [
             IconButton(
-              icon: const Icon(Icons.account_circle, color: Colors.white),
+              icon: const Icon(Icons.account_circle, color: Color(0xFFFFC55A)),
               onPressed: () => Navigator.pushNamed(context, '/profile'),
             ),
           ],
@@ -61,50 +90,56 @@ class _HomePageState extends State<HomePage> {
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF00215E), Color(0xFF2C4E80)],
+                colors: [Color(0xFF101A30), Color(0xFF1E3050)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
             ),
             child: ListView(
-              padding: EdgeInsets.only(top: 30),
+              padding: EdgeInsets.only(top: 40),
               children: [
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 32, horizontal: 16),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 28,
-                        backgroundColor: Color(0xFFFC4100),
-                        child: Icon(
-                          Icons.account_circle,
-                          color: Colors.white,
-                          size: 36,
+                FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Color(0xFFFC4100),
+                          child: Icon(
+                            Icons.account_circle,
+                            color: Colors.white,
+                            size: 40,
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Welcome',
-                            style: TextStyle(
-                              color: Color(0xFFFFC55A),
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                        SizedBox(width: 16),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Welcome',
+                              style: GoogleFonts.poppins(
+                                color: Color(0xFFFFC55A),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          Text(
-                            'User',
-                            style: TextStyle(color: Colors.white, fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ],
+                            Text(
+                              'User',
+                              style: GoogleFonts.roboto(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Divider(
-                  color: Color(0xFFFC4100),
+                  color: Color(0xFFFFC55A),
                   thickness: 1,
                   indent: 16,
                   endIndent: 16,
@@ -145,82 +180,103 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(color: Color(0xFFFC4100)),
-              )
-            : Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFF2C4E80),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0xFF2C4E80).withOpacity(0.1),
-                            blurRadius: 8,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: TextField(
-                        onChanged: (value) =>
-                            setState(() => searchQuery = value),
-                        style: const TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          hintText: 'Search for crimes...',
-                          hintStyle: const TextStyle(color: Color(0xFFFFC55A)),
-                          border: InputBorder.none,
-                          prefixIcon: const Icon(
-                            Icons.search,
-                            color: Color(0xFFFC4100),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 14,
+            ? Center(child: CircularProgressIndicator(color: Color(0xFFFC4100)))
+            : Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF101A30), Color(0xFF1E3050)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      children: [
+                        FadeTransition(
+                          opacity: _fadeAnimation,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Color(0xFF1E3050), Color(0xFF101A30)],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(18),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 10,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: TextField(
+                              onChanged: (value) =>
+                                  setState(() => searchQuery = value),
+                              style: GoogleFonts.roboto(color: Colors.white),
+                              decoration: InputDecoration(
+                                hintText: 'Search for crimes...',
+                                hintStyle: GoogleFonts.roboto(
+                                  color: Color(0xFFFFC55A).withOpacity(0.7),
+                                ),
+                                border: InputBorder.none,
+                                prefixIcon: const Icon(
+                                  Icons.search,
+                                  color: Color(0xFFFC4100),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 14,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: _mainButton(
-                                  context,
-                                  'Report Crime',
-                                  '/report',
-                                  Icons.report,
+                        const SizedBox(height: 32),
+                        Expanded(
+                          child: SlideTransition(
+                            position: _slideAnimation,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: _mainButton(
+                                        context,
+                                        'Report Crime',
+                                        '/report',
+                                        Icons.report,
+                                      ),
+                                    ),
+                                    SizedBox(width: 16),
+                                    Expanded(
+                                      child: _mainButton(
+                                        context,
+                                        'Emergency',
+                                        '/emergency',
+                                        Icons.warning,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              SizedBox(width: 16),
-                              Expanded(
-                                child: _mainButton(
-                                  context,
-                                  'Emergency',
-                                  '/emergency',
-                                  Icons.warning,
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Color(0xFF2C4E80),
+          backgroundColor: Color(0xFF1E3050),
           selectedItemColor: Color(0xFFFC4100),
-          unselectedItemColor: Colors.white,
+          unselectedItemColor: Colors.white.withOpacity(0.7),
           currentIndex: 0,
           onTap: (index) {
             switch (index) {
@@ -261,41 +317,59 @@ class _HomePageState extends State<HomePage> {
     String route,
     IconData icon,
   ) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        splashColor: Color(0xFFFFC55A).withOpacity(0.2),
-        highlightColor: Color(0xFFFC4100).withOpacity(0.1),
-        onTap: () => Navigator.pushNamed(context, route),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Color(0xFF2C4E80),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Color(0xFF00215E).withOpacity(0.08),
-                blurRadius: 8,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 44, color: Color(0xFFFC4100)),
-              const SizedBox(height: 16),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTapDown: (_) {
+        _controller.reverse();
+        Future.delayed(
+          Duration(milliseconds: 100),
+          () => _controller.forward(),
+        );
+      },
+      child: ScaleTransition(
+        scale: Tween<double>(begin: 1.0, end: 0.95).animate(
+          CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(18),
+            splashColor: Color(0xFFFFC55A).withOpacity(0.3),
+            highlightColor: Color(0xFFFC4100).withOpacity(0.2),
+            onTap: () => Navigator.pushNamed(context, route),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF1E3050), Color(0xFF101A30)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
               ),
-            ],
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, size: 44, color: Color(0xFFFC4100)),
+                  const SizedBox(height: 16),
+                  Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -308,26 +382,34 @@ class _HomePageState extends State<HomePage> {
     String title,
     String route,
   ) {
-    return Card(
-      color: Colors.transparent,
-      elevation: 0,
-      margin: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      child: ListTile(
-        leading: Icon(icon, color: Color(0xFFFFC55A)),
-        title: Text(
-          title,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: Card(
+        color: Colors.transparent,
+        elevation: 0,
+        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        child: ListTile(
+          leading: Icon(icon, color: Color(0xFFFFC55A)),
+          title: Text(
+            title,
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          trailing: Icon(
+            Icons.arrow_forward_ios,
+            size: 16,
+            color: Color(0xFFFC4100),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          onTap: () {
+            Navigator.pop(context);
+            Navigator.pushNamed(context, route);
+          },
         ),
-        trailing: Icon(
-          Icons.arrow_forward_ios,
-          size: 16,
-          color: Color(0xFFFC4100),
-        ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        onTap: () {
-          Navigator.pop(context);
-          Navigator.pushNamed(context, route);
-        },
       ),
     );
   }

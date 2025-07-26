@@ -1,3 +1,4 @@
+import '../widgets/modern_button.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,92 +27,90 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Color(0xFF00215E),
+        backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF00215E), Color(0xFF2C4E80)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      body: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF101A30), Color(0xFF1E3050)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(24.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [Color(0xFFFC4100), Color(0xFFFFC55A)],
+          child: Center(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(24.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [Color(0xFFFC4100), Color(0xFFFFC55A)],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0xFFFC4100).withOpacity(0.3),
+                            blurRadius: 20,
+                            offset: Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: Icon(Icons.lock, size: 48, color: Colors.white),
+                    ),
+                    SizedBox(height: 24),
+                    Text(
+                      'Welcome Back!',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFFFC55A),
                       ),
                     ),
-                    child: Icon(Icons.lock, size: 48, color: Colors.white),
-                  ),
-                  SizedBox(height: 24),
-                  Text(
-                    'Welcome Back!',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFFFC55A),
+                    SizedBox(height: 32),
+                    _styledTextField(
+                      phoneController,
+                      'Phone Number',
+                      Icons.phone,
+                      isNumber: true,
                     ),
-                  ),
-                  SizedBox(height: 32),
-                  _styledTextField(
-                    phoneController,
-                    'Phone Number',
-                    Icons.phone,
-                    isNumber: true,
-                  ),
-                  SizedBox(height: 20),
-                  _styledTextField(
-                    passwordController,
-                    'Password',
-                    Icons.lock,
-                    isPassword: true,
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: _forgotPassword,
-                      child: Text(
-                        'Forgot Password?',
-                        style: TextStyle(color: Color(0xFFFC4100)),
-                      ),
+                    SizedBox(height: 20),
+                    _styledTextField(
+                      passwordController,
+                      'Password',
+                      Icons.lock,
+                      isPassword: true,
                     ),
-                  ),
-                  SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: _submit,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFFC4100),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: _forgotPassword,
+                        child: Text(
+                          'Forgot Password?',
+                          style: TextStyle(color: Color(0xFFFC4100)),
                         ),
                       ),
-                      child: Text(
-                        'Login',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
-                      ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 24),
+                    ModernButton(
+                      text: 'Login',
+                      icon: Icons.login,
+                      onPressed: _submit,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -136,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
         filled: true,
         fillColor: Color(0xFF2C4E80),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(18),
           borderSide: BorderSide(color: Color(0xFFFC4100)),
         ),
         labelStyle: TextStyle(color: Color(0xFFFFC55A)),
