@@ -230,15 +230,27 @@ class ProfilePage extends StatelessWidget {
           SizedBox(height: 40),
           SizedBox(
             width: double.infinity,
-            height: 50,
+            height: 56,
             child: ElevatedButton.icon(
-              icon: Icon(Icons.person_add_alt_1_outlined, color: Colors.white),
-              label: Text('Sign Up', style: TextStyle(color: Colors.white)),
+              icon: Icon(
+                Icons.person_add_alt_1_outlined,
+                color: Colors.white,
+                size: 24,
+              ),
+              label: Text(
+                'Sign Up',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFFFC4100),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18),
                 ),
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               ),
               onPressed: () {
                 Navigator.push(
@@ -251,16 +263,28 @@ class ProfilePage extends StatelessWidget {
           SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
-            height: 50,
+            height: 56,
             child: ElevatedButton.icon(
-              icon: Icon(Icons.login_outlined, color: Color(0xFFFC4100)),
-              label: Text('Log In', style: TextStyle(color: Color(0xFFFC4100))),
+              icon: Icon(
+                Icons.login_outlined,
+                color: Color(0xFFFC4100),
+                size: 24,
+              ),
+              label: Text(
+                'Log In',
+                style: TextStyle(
+                  color: Color(0xFFFC4100),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.transparent,
                 side: BorderSide(color: Color(0xFFFC4100), width: 2),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18),
                 ),
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               ),
               onPressed: () {
                 Navigator.pushNamed(context, '/login');

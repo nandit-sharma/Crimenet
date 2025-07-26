@@ -76,7 +76,7 @@ class SignUpPage extends StatelessWidget {
               SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 56,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
@@ -86,12 +86,13 @@ class SignUpPage extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   ),
                   child: Text(
                     'Submit',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
